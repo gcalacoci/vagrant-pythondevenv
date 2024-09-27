@@ -1,0 +1,25 @@
+---
+- name: Setup Python Development Environment
+  hosts: pythondevhost
+  become: yes
+
+  tasks:
+    - name: "Install packages"
+      dnf: "name={{ item }} state=present"
+      with_items:
+        - postgresql
+        - postgresql-server
+
+    - name: Ensure postgresql is at the latest version
+      ansible.builtin.yum:
+        name: postgresql
+        state: latest
+
+    - name: install pyenv
+      import_role:
+        name: staticdev.pyenv
+      vars:
+        pyenv_env: 'system'
+        pyenv_global: ["3.8.16"]
+        pyenv_python_versions: ["3.8.16"]
+        pyenv_uninstall_python_w_wrong_configure_opts: False
