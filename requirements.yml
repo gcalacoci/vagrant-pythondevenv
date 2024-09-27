@@ -1,2 +1,3 @@
 roles:
-- name: staticdev.pyenv
+  - name: agoloncser.pyenv
+  - name: bartdorlandt.poetry

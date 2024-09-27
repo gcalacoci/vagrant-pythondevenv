@@ -1,25 +1,31 @@
 ---
 - name: Setup Python Development Environment
   hosts: pythondevhost
-  become: yes
+  become: true
 
   tasks:
     - name: "Install packages"
-      dnf: "name={{ item }} state=present"
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
       with_items:
         - postgresql
         - postgresql-server
+        - git
 
     - name: Ensure postgresql is at the latest version
       ansible.builtin.yum:
         name: postgresql
         state: latest
 
-    - name: install pyenv
-      import_role:
-        name: staticdev.pyenv
+    - name: Install Pyenv
+      ansible.builtin.import_role:
+        name: agoloncser.pyenv
       vars:
-        pyenv_env: 'system'
-        pyenv_global: ["3.8.16"]
-        pyenv_python_versions: ["3.8.16"]
-        pyenv_uninstall_python_w_wrong_configure_opts: False
+        pyenv_python_versions:
+          - version: "3.9.20"
+            global: true
+
+    - name: Install Poetry
+      ansible.builtin.import_role:
+        name: bartdorlandt.poetry
